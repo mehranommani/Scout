@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scout — Architecture Diagram</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      color: #1e293b;
+      padding: 36px 32px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e0f2fe;
+      border: 1px solid #7dd3fc;
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      background: #0ea5e9;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .diagram-wrap {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    svg { display: block; margin: 0 auto; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot-cyan    { background: #0891b2; }
+    .dot-emerald { background: #059669; }
+    .dot-violet  { background: #7c3aed; }
+    .card-header h3 {
+      font-size: 10px;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .card ul { list-style: none; }
+    .card ul li {
+      font-size: 11px;
+      color: #475569;
+      padding: 4px 0;
+      border-bottom: 1px solid #f8fafc;
+      line-height: 1.4;
+    }
+    .card ul li:last-child { border-bottom: none; }
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+      padding-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge"><div class="badge-dot"></div>Architecture Overview</div>
+  <h1>Scout — Company Intelligence Agent</h1>
+  <p class="subtitle">LangGraph · FastAPI · Next.js 14 · Ollama · Langfuse · PostgreSQL · Qdrant</p>
+</div>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 1080 710" width="1080" height="710" xmlns="http://www.w3.org/2000/svg"
+     font-family="'JetBrains Mono', monospace">
+
+  <defs>
+    <!-- Grid -->
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0L0 0 0 40" fill="none" stroke="#f1f5f9" stroke-width="0.6"/>
+    </pattern>
+    <!-- Arrowheads -->
+    <marker id="a"      markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#94a3b8"/></marker>
+    <marker id="a-cyan" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#0891b2"/></marker>
+    <marker id="a-green"markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#059669"/></marker>
+    <marker id="a-violet"markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#7c3aed"/></marker>
+    <marker id="a-blue" markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#2563eb"/></marker>
+    <marker id="a-red"  markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#dc2626"/></marker>
+    <marker id="a-amber"markerWidth="7" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0,7 3,0 6" fill="#b45309"/></marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="710" fill="white"/>
+  <rect width="1080" height="710" fill="url(#g)"/>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ARROWS — drawn first so boxes render on top
+  ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- User → Frontend -->
+  <line x1="178" y1="84" x2="248" y2="84" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a-cyan)"/>
+  <text x="213" y="78" fill="#0891b2" font-size="8" text-anchor="middle">HTTP</text>
+
+  <!-- Frontend → FastAPI -->
+  <line x1="540" y1="162" x2="540" y2="228" stroke="#059669" stroke-width="1.5" marker-end="url(#a-green)"/>
+  <text x="556" y="200" fill="#059669" font-size="8">REST + SSE</text>
+
+  <!-- FastAPI → LangGraph -->
+  <line x1="360" y1="298" x2="280" y2="328" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#a-violet)"/>
+  <text x="295" y="316" fill="#7c3aed" font-size="8">ainvoke</text>
+
+  <!-- LangGraph → Langfuse (traces) -->
+  <line x1="530" y1="390" x2="598" y2="390" stroke="#dc2626" stroke-width="1.4" marker-end="url(#a-red)"/>
+  <text x="564" y="382" fill="#dc2626" font-size="8" text-anchor="middle">traces</text>
+
+  <!-- LangGraph → MCP Tools -->
+  <line x1="185" y1="452" x2="185" y2="462" stroke="#64748b" stroke-width="1.4" marker-end="url(#a)"/>
+
+  <!-- LangGraph → Ollama -->
+  <path d="M 380 452 Q 380 478 700 478" fill="none" stroke="#2563eb" stroke-width="1.4" marker-end="url(#a-blue)"/>
+  <text x="530" y="472" fill="#2563eb" font-size="8" text-anchor="middle">LLM inference</text>
+
+  <!-- LangGraph → PostgreSQL -->
+  <path d="M 340 452 L 340 478 L 405 478 L 405 462" fill="none" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#a-violet)"/>
+
+  <!-- LangGraph → Qdrant -->
+  <path d="M 420 452 L 420 475 L 560 475 L 560 462" fill="none" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#a-violet)"/>
+
+  <!-- MCP Tools → External Sources -->
+  <line x1="185" y1="534" x2="185" y2="554" stroke="#b45309" stroke-width="1.4" marker-end="url(#a-amber)"/>
+
+  <!-- Langfuse → Ollama (eval jobs) -->
+  <path d="M 810 452 L 810 475 L 780 475" fill="none" stroke="#dc2626" stroke-width="1.1" stroke-dasharray="3,2" marker-end="url(#a-red)"/>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 1 — USER
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="38" y="57" width="138" height="54" rx="6" fill="#f8fafc"/>
+  <rect x="38" y="57" width="138" height="54" rx="6" fill="rgba(100,116,139,0.09)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="107" y="80" fill="#475569" font-size="11" font-weight="600" text-anchor="middle">Browser</text>
+  <text x="107" y="98" fill="#94a3b8" font-size="9" text-anchor="middle">User Interface</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 2 — FRONTEND
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="248" y="38" width="794" height="108" rx="8" fill="#f0fdfa"/>
+  <rect x="248" y="38" width="794" height="108" rx="8" fill="rgba(8,145,178,0.07)" stroke="#0891b2" stroke-width="1.5"/>
+  <text x="645" y="60" fill="#0e7490" font-size="10" font-weight="700" text-anchor="middle" letter-spacing="0.04em">NEXT.JS 14 — FRONTEND  ·  port 3000</text>
+
+  <!-- Page tiles -->
+  <rect x="265" y="68" width="100" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="315" y="92" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Home</text>
+  <text x="315" y="107" fill="#22d3ee" font-size="8" text-anchor="middle">Company search</text>
+
+  <rect x="375" y="68" width="115" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="432" y="92" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Research</text>
+  <text x="432" y="107" fill="#22d3ee" font-size="8" text-anchor="middle">Live SSE stream</text>
+
+  <rect x="500" y="68" width="100" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="550" y="92" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Reports</text>
+  <text x="550" y="107" fill="#22d3ee" font-size="8" text-anchor="middle">Dossier view</text>
+
+  <rect x="610" y="68" width="100" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="660" y="92" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Eval</text>
+  <text x="660" y="107" fill="#22d3ee" font-size="8" text-anchor="middle">LLM scores</text>
+
+  <rect x="720" y="68" width="100" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="770" y="92" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Sources</text>
+  <text x="770" y="107" fill="#22d3ee" font-size="8" text-anchor="middle">Health status</text>
+
+  <rect x="830" y="68" width="196" height="64" rx="5" fill="rgba(8,145,178,0.11)" stroke="#67e8f9" stroke-width="1"/>
+  <text x="928" y="88" fill="#0e7490" font-size="9" font-weight="600" text-anchor="middle">Stack</text>
+  <text x="928" y="103" fill="#22d3ee" font-size="8" text-anchor="middle">Tailwind · Framer Motion</text>
+  <text x="928" y="117" fill="#22d3ee" font-size="7.5" text-anchor="middle">SWR · TypeScript</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 3 — FASTAPI
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="130" y="228" width="820" height="70" rx="8" fill="#f0fdf4"/>
+  <rect x="130" y="228" width="820" height="70" rx="8" fill="rgba(5,150,105,0.07)" stroke="#059669" stroke-width="1.5"/>
+  <text x="540" y="250" fill="#047857" font-size="10" font-weight="700" text-anchor="middle" letter-spacing="0.04em">FASTAPI BACKEND  ·  port 8000</text>
+
+  <rect x="148" y="258" width="148" height="28" rx="4" fill="rgba(5,150,105,0.11)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="222" y="276" fill="#065f46" font-size="9" font-weight="600" text-anchor="middle">POST /api/research</text>
+
+  <rect x="306" y="258" width="175" height="28" rx="4" fill="rgba(5,150,105,0.11)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="393" y="276" fill="#065f46" font-size="9" font-weight="600" text-anchor="middle">GET /api/research/stream  SSE</text>
+
+  <rect x="491" y="258" width="150" height="28" rx="4" fill="rgba(5,150,105,0.11)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="566" y="276" fill="#065f46" font-size="9" font-weight="600" text-anchor="middle">GET /api/reports/{id}</text>
+
+  <rect x="651" y="258" width="120" height="28" rx="4" fill="rgba(5,150,105,0.11)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="711" y="276" fill="#065f46" font-size="9" font-weight="600" text-anchor="middle">GET /api/eval</text>
+
+  <rect x="781" y="258" width="154" height="28" rx="4" fill="rgba(5,150,105,0.11)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="858" y="276" fill="#065f46" font-size="9" font-weight="600" text-anchor="middle">GET /api/health · stats</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 4A — LANGGRAPH AGENT
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="38" y="328" width="550" height="124" rx="8" fill="#faf5ff"/>
+  <rect x="38" y="328" width="550" height="124" rx="8" fill="rgba(124,58,237,0.07)" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="313" y="350" fill="#6d28d9" font-size="10" font-weight="700" text-anchor="middle" letter-spacing="0.04em">LANGGRAPH AGENT — STATE MACHINE</text>
+
+  <!-- Node 1 -->
+  <rect x="54"  y="360" width="118" height="78" rx="5" fill="rgba(124,58,237,0.11)" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="113" y="381" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">classify_input</text>
+  <text x="113" y="396" fill="#8b5cf6" font-size="8" text-anchor="middle">LLM structured</text>
+  <text x="113" y="409" fill="#8b5cf6" font-size="8" text-anchor="middle">output</text>
+  <text x="113" y="424" fill="#a78bfa" font-size="7.5" text-anchor="middle">company / product</text>
+  <line x1="172" y1="399" x2="184" y2="399" stroke="#a78bfa" stroke-width="1" marker-end="url(#a-violet)"/>
+
+  <!-- Node 2 -->
+  <rect x="186" y="360" width="118" height="78" rx="5" fill="rgba(124,58,237,0.11)" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="245" y="381" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">resolve_product</text>
+  <text x="245" y="396" fill="#8b5cf6" font-size="8" text-anchor="middle">product name →</text>
+  <text x="245" y="409" fill="#8b5cf6" font-size="8" text-anchor="middle">company name</text>
+  <line x1="304" y1="399" x2="316" y2="399" stroke="#a78bfa" stroke-width="1" marker-end="url(#a-violet)"/>
+
+  <!-- Node 3 -->
+  <rect x="318" y="360" width="128" height="78" rx="5" fill="rgba(124,58,237,0.11)" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="382" y="381" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">scrape_and</text>
+  <text x="382" y="394" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">_generate</text>
+  <text x="382" y="409" fill="#8b5cf6" font-size="8" text-anchor="middle">5 sources async</text>
+  <text x="382" y="422" fill="#a78bfa" font-size="7.5" text-anchor="middle">→ LLM report</text>
+  <line x1="446" y1="399" x2="458" y2="399" stroke="#a78bfa" stroke-width="1" marker-end="url(#a-violet)"/>
+
+  <!-- Node 4 -->
+  <rect x="460" y="360" width="118" height="78" rx="5" fill="rgba(124,58,237,0.11)" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="519" y="381" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">validate_and</text>
+  <text x="519" y="394" fill="#5b21b6" font-size="9" font-weight="600" text-anchor="middle">_store</text>
+  <text x="519" y="409" fill="#8b5cf6" font-size="8" text-anchor="middle">structural checks</text>
+  <text x="519" y="422" fill="#a78bfa" font-size="7.5" text-anchor="middle">retry ≤ 3 / persist</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 4B — LANGFUSE
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="598" y="328" width="444" height="124" rx="8" fill="#fff1f2"/>
+  <rect x="598" y="328" width="444" height="124" rx="8" fill="rgba(220,38,38,0.06)" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="820" y="350" fill="#b91c1c" font-size="10" font-weight="700" text-anchor="middle" letter-spacing="0.04em">LANGFUSE — OBSERVABILITY  ·  port 3001</text>
+
+  <rect x="614" y="360" width="120" height="78" rx="5" fill="rgba(220,38,38,0.09)" stroke="#fca5a5" stroke-width="1"/>
+  <text x="674" y="381" fill="#991b1b" font-size="9" font-weight="600" text-anchor="middle">Tracing</text>
+  <text x="674" y="396" fill="#ef4444" font-size="8" text-anchor="middle">spans · tokens</text>
+  <text x="674" y="410" fill="#fca5a5" font-size="7.5" text-anchor="middle">latency · cost</text>
+
+  <rect x="744" y="360" width="130" height="78" rx="5" fill="rgba(220,38,38,0.09)" stroke="#fca5a5" stroke-width="1"/>
+  <text x="809" y="381" fill="#991b1b" font-size="9" font-weight="600" text-anchor="middle">LLM Evaluators</text>
+  <text x="809" y="396" fill="#ef4444" font-size="8" text-anchor="middle">factual_grounding</text>
+  <text x="809" y="409" fill="#ef4444" font-size="8" text-anchor="middle">specific_facts</text>
+  <text x="809" y="422" fill="#fca5a5" font-size="7.5" text-anchor="middle">no_active_bias</text>
+
+  <rect x="884" y="360" width="148" height="78" rx="5" fill="rgba(220,38,38,0.09)" stroke="#fca5a5" stroke-width="1"/>
+  <text x="958" y="381" fill="#991b1b" font-size="9" font-weight="600" text-anchor="middle">Infrastructure</text>
+  <text x="958" y="396" fill="#ef4444" font-size="8" text-anchor="middle">ClickHouse · Redis</text>
+  <text x="958" y="410" fill="#fca5a5" font-size="7.5" text-anchor="middle">MinIO · Worker</text>
+  <text x="958" y="423" fill="#fca5a5" font-size="7.5" text-anchor="middle">Docker Compose</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 5A — MCP TOOLS
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="38" y="462" width="285" height="72" rx="8" fill="#f8fafc"/>
+  <rect x="38" y="462" width="285" height="72" rx="8" fill="rgba(100,116,139,0.07)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="180" y="484" fill="#334155" font-size="9.5" font-weight="700" text-anchor="middle" letter-spacing="0.03em">MCP TOOLS  (FastMCP)</text>
+  <text x="96"  y="504" fill="#64748b" font-size="8.5" text-anchor="middle">validate_name</text>
+  <text x="180" y="504" fill="#64748b" font-size="8.5" text-anchor="middle">scrape_source</text>
+  <text x="266" y="504" fill="#64748b" font-size="8.5" text-anchor="middle">merge_results</text>
+  <text x="96"  y="520" fill="#94a3b8" font-size="7.5" text-anchor="middle">format check</text>
+  <text x="180" y="520" fill="#94a3b8" font-size="7.5" text-anchor="middle">5 scrapers</text>
+  <text x="266" y="520" fill="#94a3b8" font-size="7.5" text-anchor="middle">dedup + merge</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 5B — POSTGRESQL
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="335" y="462" width="165" height="72" rx="8" fill="#faf5ff"/>
+  <rect x="335" y="462" width="165" height="72" rx="8" fill="rgba(109,40,217,0.08)" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="418" y="484" fill="#5b21b6" font-size="9.5" font-weight="700" text-anchor="middle">PostgreSQL</text>
+  <text x="418" y="499" fill="#94a3b8" font-size="8" text-anchor="middle">port 5432</text>
+  <text x="418" y="514" fill="#8b5cf6" font-size="8" text-anchor="middle">sessions · reports</text>
+  <text x="418" y="527" fill="#a78bfa" font-size="7.5" text-anchor="middle">eval scores</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 5C — QDRANT
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="512" y="462" width="160" height="72" rx="8" fill="#faf5ff"/>
+  <rect x="512" y="462" width="160" height="72" rx="8" fill="rgba(109,40,217,0.08)" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="592" y="484" fill="#5b21b6" font-size="9.5" font-weight="700" text-anchor="middle">Qdrant</text>
+  <text x="592" y="499" fill="#94a3b8" font-size="8" text-anchor="middle">port 6333</text>
+  <text x="592" y="514" fill="#8b5cf6" font-size="8" text-anchor="middle">vector search</text>
+  <text x="592" y="527" fill="#a78bfa" font-size="7.5" text-anchor="middle">report embeddings</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 5D — OLLAMA
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="686" y="462" width="356" height="72" rx="8" fill="#eff6ff"/>
+  <rect x="686" y="462" width="356" height="72" rx="8" fill="rgba(37,99,235,0.07)" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="864" y="484" fill="#1d4ed8" font-size="9.5" font-weight="700" text-anchor="middle">Ollama  ·  port 11434</text>
+  <rect x="700" y="494" width="155" height="30" rx="4" fill="rgba(37,99,235,0.1)" stroke="#93c5fd" stroke-width="1"/>
+  <text x="778" y="507" fill="#1e40af" font-size="8.5" font-weight="600" text-anchor="middle">qwen2.5:14b</text>
+  <text x="778" y="519" fill="#60a5fa" font-size="7.5" text-anchor="middle">report generation</text>
+  <rect x="868" y="494" width="160" height="30" rx="4" fill="rgba(37,99,235,0.1)" stroke="#93c5fd" stroke-width="1"/>
+  <text x="948" y="507" fill="#1e40af" font-size="8.5" font-weight="600" text-anchor="middle">nomic-embed-text</text>
+  <text x="948" y="519" fill="#60a5fa" font-size="7.5" text-anchor="middle">vector embeddings</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LAYER 6 — EXTERNAL DATA SOURCES
+  ═══════════════════════════════════════════════════════════════════ -->
+  <rect x="38" y="554" width="560" height="82" rx="8" fill="#fffbeb"/>
+  <rect x="38" y="554" width="560" height="82" rx="8" fill="rgba(180,83,9,0.06)" stroke="#b45309" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="318" y="574" fill="#92400e" font-size="9.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">EXTERNAL DATA SOURCES</text>
+
+  <rect x="52"  y="582" width="96" height="44" rx="4" fill="rgba(180,83,9,0.09)" stroke="#fcd34d" stroke-width="1"/>
+  <text x="100" y="601" fill="#92400e" font-size="8.5" font-weight="600" text-anchor="middle">Wikidata</text>
+  <text x="100" y="615" fill="#d97706" font-size="7.5" text-anchor="middle">SPARQL · free</text>
+
+  <rect x="158" y="582" width="106" height="44" rx="4" fill="rgba(180,83,9,0.09)" stroke="#fcd34d" stroke-width="1"/>
+  <text x="211" y="601" fill="#92400e" font-size="8.5" font-weight="600" text-anchor="middle">DuckDuckGo</text>
+  <text x="211" y="615" fill="#d97706" font-size="7.5" text-anchor="middle">web search · free</text>
+
+  <rect x="274" y="582" width="110" height="44" rx="4" fill="rgba(180,83,9,0.09)" stroke="#fcd34d" stroke-width="1"/>
+  <text x="329" y="601" fill="#92400e" font-size="8.5" font-weight="600" text-anchor="middle">OpenCorporates</text>
+  <text x="329" y="615" fill="#d97706" font-size="7.5" text-anchor="middle">API · optional key</text>
+
+  <rect x="394" y="582" width="100" height="44" rx="4" fill="rgba(180,83,9,0.09)" stroke="#fcd34d" stroke-width="1"/>
+  <text x="444" y="601" fill="#92400e" font-size="8.5" font-weight="600" text-anchor="middle">Crunchbase</text>
+  <text x="444" y="615" fill="#d97706" font-size="7.5" text-anchor="middle">API · optional key</text>
+
+  <rect x="504" y="582" width="84" height="44" rx="4" fill="rgba(180,83,9,0.09)" stroke="#fcd34d" stroke-width="1"/>
+  <text x="546" y="601" fill="#92400e" font-size="8.5" font-weight="600" text-anchor="middle">LinkedIn</text>
+  <text x="546" y="615" fill="#d97706" font-size="7.5" text-anchor="middle">scraper · free</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       LEGEND
+  ═══════════════════════════════════════════════════════════════════ -->
+  <line x1="38" y1="652" x2="1042" y2="652" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="38" y="669" fill="#94a3b8" font-size="8" font-weight="700" letter-spacing="0.06em">LEGEND</text>
+
+  <rect x="88"  y="661" width="11" height="11" rx="2" fill="rgba(8,145,178,0.18)"   stroke="#0891b2" stroke-width="1"/>
+  <text x="104" y="670" fill="#64748b" font-size="8">Frontend</text>
+
+  <rect x="168" y="661" width="11" height="11" rx="2" fill="rgba(5,150,105,0.18)"   stroke="#059669" stroke-width="1"/>
+  <text x="184" y="670" fill="#64748b" font-size="8">API Layer</text>
+
+  <rect x="255" y="661" width="11" height="11" rx="2" fill="rgba(124,58,237,0.18)"  stroke="#7c3aed" stroke-width="1"/>
+  <text x="271" y="670" fill="#64748b" font-size="8">AI / Agent</text>
+
+  <rect x="345" y="661" width="11" height="11" rx="2" fill="rgba(109,40,217,0.18)"  stroke="#6d28d9" stroke-width="1"/>
+  <text x="361" y="670" fill="#64748b" font-size="8">Storage</text>
+
+  <rect x="422" y="661" width="11" height="11" rx="2" fill="rgba(37,99,235,0.18)"   stroke="#2563eb" stroke-width="1"/>
+  <text x="438" y="670" fill="#64748b" font-size="8">LLM</text>
+
+  <rect x="475" y="661" width="11" height="11" rx="2" fill="rgba(220,38,38,0.18)"   stroke="#dc2626" stroke-width="1"/>
+  <text x="491" y="670" fill="#64748b" font-size="8">Observability</text>
+
+  <rect x="578" y="661" width="11" height="11" rx="2" fill="rgba(180,83,9,0.12)"    stroke="#b45309" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="594" y="670" fill="#64748b" font-size="8">External APIs</text>
+
+  <line x1="678" y1="666" x2="706" y2="666" stroke="#059669" stroke-width="1.5" marker-end="url(#a-green)"/>
+  <text x="714" y="670" fill="#64748b" font-size="8">data flow</text>
+
+  <line x1="768" y1="666" x2="796" y2="666" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#a)"/>
+  <text x="804" y="670" fill="#64748b" font-size="8">async / persist</text>
+
+  <line x1="882" y1="666" x2="910" y2="666" stroke="#dc2626" stroke-width="1.1" stroke-dasharray="3,2" marker-end="url(#a-red)"/>
+  <text x="918" y="670" fill="#64748b" font-size="8">eval trigger</text>
+
+</svg>
+</div>
+
+<div class="cards">
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-violet"></div>
+      <h3>Agent Pipeline</h3>
+    </div>
+    <ul>
+      <li>• classify_input — LLM structured output (company / product / invalid)</li>
+      <li>• resolve_product — maps product name to owning company</li>
+      <li>• scrape_and_generate — 5 sources in parallel → LLM report</li>
+      <li>• validate_and_store — 4 structural checks, retry loop (max 3)</li>
+      <li>• Best attempt always persisted even on max retries</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-cyan"></div>
+      <h3>Data Sources</h3>
+    </div>
+    <ul>
+      <li>• Wikidata — SPARQL: founders, CEO, HQ, revenue</li>
+      <li>• DuckDuckGo — 3 targeted searches (financial, contact, general)</li>
+      <li>• OpenCorporates — legal registration, jurisdiction</li>
+      <li>• Crunchbase — funding rounds, investors, valuation</li>
+      <li>• LinkedIn — employee count, company overview</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="dot dot-emerald"></div>
+      <h3>Infrastructure</h3>
+    </div>
+    <ul>
+      <li>• PostgreSQL — sessions, reports, eval scores</li>
+      <li>• Qdrant — vector search on report content</li>
+      <li>• Langfuse — LLM-as-judge eval, trace scores, spans</li>
+      <li>• Ollama — fully local LLM, no API keys required</li>
+      <li>• SSE — real-time agent progress streaming to UI</li>
+    </ul>
+  </div>
+</div>
+
+<div class="footer">
+  Scout — Company Intelligence Agent &nbsp;·&nbsp; LangGraph + FastAPI + Next.js 14 + Ollama (qwen2.5:14b)
+</div>
+
+</body>
+</html>

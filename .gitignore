@@ -21,9 +21,6 @@ frontend/out/
 dist/
 build/
 
-# Generated outputs 
-architecture.html
-
 # OS
 .DS_Store
 Thumbs.db
