@@ -2,6 +2,7 @@
 PostgreSQL access via raw asyncpg — no SQLAlchemy.
 Tables are created on startup with CREATE TABLE IF NOT EXISTS.
 """
+import asyncio
 import asyncpg
 import logging
 from contextlib import asynccontextmanager
@@ -54,15 +55,27 @@ CREATE TABLE IF NOT EXISTS company_reports (
 
 async def init_db() -> None:
     global _pool
-    _pool = await asyncpg.create_pool(
-        settings.DATABASE_URL,
-        min_size=2,
-        max_size=10,
-        command_timeout=30,
-    )
-    async with _pool.acquire() as conn:
-        await conn.execute(CREATE_TABLES_SQL)
-    logger.info("Database pool initialised and schema ready.")
+    for attempt in range(10):
+        try:
+            _pool = await asyncpg.create_pool(
+                settings.DATABASE_URL,
+                min_size=2,
+                max_size=10,
+                command_timeout=30,
+            )
+            async with _pool.acquire() as conn:
+                await conn.execute(CREATE_TABLES_SQL)
+            logger.info("Database pool initialised and schema ready.")
+            return
+        except Exception as exc:
+            if _pool:
+                await _pool.close()
+                _pool = None
+            if attempt < 9:
+                logger.warning("DB not ready (attempt %d/10): %s — retrying in 2s", attempt + 1, exc)
+                await asyncio.sleep(2)
+            else:
+                raise
 
 
 async def close_db() -> None:
