@@ -85,7 +85,7 @@ ollama pull nomic-embed-text
 ### 1. One-time setup
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/mehranommani/Scout.git
 cd scout
 bash setup.sh
 ```
