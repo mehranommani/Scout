@@ -1,0 +1,36 @@
+# Secrets — never commit
+.env
+frontend/.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/.next/
+frontend/out/
+
+# Build artifacts
+dist/
+build/
+
+# Generated outputs 
+architecture.html
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
